@@ -1,54 +1,51 @@
 const daysOfWeek = ["Dec 31, Sun", "Jan 1, Mon", "Jan 2, Tue", "Jan 3, Wed", "Jan 4, Thu", "Jan 5, Fri", "Jan 6, Sat", "Jan 7, Sun"];
+const timeSlots = ["8:00-8:30", "8:30-9:00", "9:00-9:30", "9:30-10:00"];
 
-// Function to dynamically create schedule grid
-function createScheduleGrid() {
-    const scheduleContainer = document.querySelector(".schedule-container");
+function createVotingTable() {
+    const votingTable = document.getElementById("votingTable");
 
-    // Create headers for each day
-    daysOfWeek.forEach(day => {
-        const dayHeader = document.createElement("div");
-        dayHeader.classList.add("day-header");
-        dayHeader.textContent = day;
-        scheduleContainer.appendChild(dayHeader);
-    });
+    // Create rows for each time slot
+    timeSlots.forEach(timeSlot => {
+        const row = document.createElement("tr");
 
-    // Create time slots and checkboxes for each day
-    for (let hour = 9; hour <= 12; hour++) {
-        const timeSlot = document.createElement("div");
-        timeSlot.classList.add("time-slot");
-        timeSlot.innerHTML = `<div>${hour}:00-${hour + 1}:00</div>`;
-        
-        // Create a checkbox for each day
-        daysOfWeek.forEach((day, index) => {
+        // Add the time slot to the first column
+        const timeSlotCell = document.createElement("td");
+        timeSlotCell.textContent = timeSlot;
+        row.appendChild(timeSlotCell);
+
+        // Add checkboxes for each day
+        daysOfWeek.forEach(() => {
+            const checkBoxCell = document.createElement("td");
             const checkBox = document.createElement("input");
             checkBox.type = "checkbox";
             checkBox.classList.add("check-box");
-            checkBox.id = `checkbox-${hour}-${index}`;
-            timeSlot.appendChild(checkBox);
+            checkBoxCell.appendChild(checkBox);
+            row.appendChild(checkBoxCell);
         });
 
-        scheduleContainer.appendChild(timeSlot);
-    }
+        votingTable.appendChild(row);
+    });
 }
 
-// Function to submit the vote
 function submitVote() {
     const nameInput = document.getElementById("name").value;
     const selectedOptions = [];
 
     // Loop through checkboxes to check which ones are selected
-    for (let hour = 9; hour <= 12; hour++) {
-        daysOfWeek.forEach((day, index) => {
-            const checkBox = document.getElementById(`checkbox-${hour}-${index}`);
+    timeSlots.forEach((timeSlot, rowIndex) => {
+        daysOfWeek.forEach((day, colIndex) => {
+            const checkBox = document.getElementById(`checkbox-${rowIndex}-${colIndex}`);
             if (checkBox.checked) {
-                selectedOptions.push({ day, time: `${hour}:00-${hour + 1}:00` });
+                selectedOptions.push({ name: nameInput, day, time: timeSlot });
             }
         });
-    }
+    });
 
-    // You can handle the submission logic here (e.g., send data to a server)
+    // Display the selected options
     console.log(`${nameInput} voted for:`, selectedOptions);
+
+    // You can further handle the submission logic (e.g., send data to a server or store in a database)
 }
 
-// Call the function to create the schedule grid when the page loads
-createScheduleGrid();
+// Call the function to create the voting table when the page loads
+createVotingTable();
