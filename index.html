@@ -1,29 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Voting Schedule</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-
-<div class="container">
-    <h1>Voting Schedule</h1>
-    <p>Enter your name and vote for the options:</p>
-
-    <form id="votingForm">
-        <label for="name">Your Name:</label>
-        <input type="text" id="name" name="name" placeholder="Enter your name">
-
-        <table id="votingTable">
-            <!-- Dynamic content will be added here -->
-        </table>
-
-        <button type="button" onclick="submitVote()">Submit Vote</button>
-    </form>
-</div>
-
-<script src="script.js"></script>
+    <table id="pollTable"></table>
+    <button onclick="getResults()">Get Results</button>
+    <div id="results"></div>
+    <script src="script.js"></script>
 </body>
 </html>
+
