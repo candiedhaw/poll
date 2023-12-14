@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input, button {
+    margin-top: 5px;
+    padding: 8px;
+}
+
+.schedule-container {
+    display: grid;
+    grid-template-columns: auto repeat(7, 1fr); /* 1 column for time, 7 columns for days */
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.day-header {
+    font-weight: bold;
+}
+
+.time-slot {
+    display: flex;
+    align-items: center;
+}
+
+.check-box {
+    margin-right: 5px;
+}
