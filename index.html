@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Event Scheduler</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>Event Scheduler</h1>
+    <p>Enter your name and vote for the options:</p>
+
+    <form method="post" action="{{ url_for('submit_vote') }}">
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name">
+
+        <div class="schedule-container">
+            {% for day in days_of_week %}
+                <div class="day-header">{{ day }}</div>
+            {% endfor %}
+
+            {% for hour in range(9, 13) %}
+                <div class="time-slot">
+                    <div>{{ hour }}:00-{{ hour + 1 }}:00</div>
+                    {% for index, day in enumerate(days_of_week) %}
+                        <input type="checkbox" class="check-box" id="checkbox-{{ hour }}-{{ index }}" name="checkbox-{{ hour }}-{{ index }}">
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit">Submit Vote</button>
+    </form>
+</div>
+
+</body>
+</html>
