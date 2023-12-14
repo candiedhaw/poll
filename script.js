@@ -17,7 +17,7 @@ function createVotingTable() {
     votingTable.appendChild(headerRow);
 
     // Create rows for each time slot
-    timeSlots.forEach(timeSlot => {
+    timeSlots.forEach((timeSlot, rowIndex) => {
         const row = document.createElement("tr");
 
         // Add the time slot to the first column
@@ -25,12 +25,13 @@ function createVotingTable() {
         timeSlotCell.textContent = timeSlot;
         row.appendChild(timeSlotCell);
 
-        // Add checkboxes for each day
-        daysOfWeek.forEach(() => {
+        // Add checkboxes for each day in columns [2 to 9]
+        daysOfWeek.forEach((day, colIndex) => {
             const checkBoxCell = document.createElement("td");
             const checkBox = document.createElement("input");
             checkBox.type = "checkbox";
             checkBox.classList.add("check-box");
+            checkBox.id = `checkbox-${rowIndex}-${colIndex}`;
             checkBoxCell.appendChild(checkBox);
             row.appendChild(checkBoxCell);
         });
