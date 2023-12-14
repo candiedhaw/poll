@@ -4,6 +4,18 @@ const timeSlots = ["8:00-8:30", "8:30-9:00", "9:00-9:30", "9:30-10:00"];
 function createVotingTable() {
     const votingTable = document.getElementById("votingTable");
 
+    // Create the header row with date titles
+    const headerRow = document.createElement("tr");
+    headerRow.appendChild(document.createElement("th")); // Empty cell for the first column
+
+    daysOfWeek.forEach(day => {
+        const headerCell = document.createElement("th");
+        headerCell.textContent = day;
+        headerRow.appendChild(headerCell);
+    });
+
+    votingTable.appendChild(headerRow);
+
     // Create rows for each time slot
     timeSlots.forEach(timeSlot => {
         const row = document.createElement("tr");
