@@ -1,9 +1,9 @@
 const pollTitle = "PAG Prep Schedule Poll";
 const timeZone = "Central Time";
-const meetingStartTime = { weekdays: "8:00 PM", weekends: "9:00 AM" };
 const dateRange = ["Dec 31, Sun", "Jan 1, Mon", "Jan 2, Tue", "Jan 3, Wed", "Jan 4, Thu", "Jan 5, Fri", "Jan 6, Sat", "Jan 7, Sun"];
 
 const container = document.querySelector('.container');
+const pollTitleElement = document.querySelector('.poll-title');
 const scheduleTable = document.getElementById('scheduleTable');
 const nameInput = document.getElementById('nameInput');
 const votingResults = document.getElementById('votingResults');
@@ -92,23 +92,4 @@ function displayResults(selectedOptions) {
     }
 }
 
-function calculateMostSelected(selectedOptions) {
-    const countMap = {};
-    selectedOptions.forEach(option => {
-        const key = `${option.selectedDate} ${option.selectedTime}`;
-        countMap[key] = (countMap[key] || 0) + 1;
-    });
-
-    let mostSelected = { date: "", time: "", count: 0 };
-    for (const key in countMap) {
-        if (countMap[key] > mostSelected.count) {
-            mostSelected.count = countMap[key];
-            [mostSelected.date, mostSelected.time] = key.split(" ");
-        }
-    }
-
-    return mostSelected;
-}
-
-// Call the function to create the schedule poll when the page loads
-createSchedulePoll();
+function
