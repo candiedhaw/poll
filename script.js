@@ -1,65 +1,75 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const pollTitle = "PAG prep schedule poll";
-    const startDate = new Date("Dec 31, 2023");
-    const endDate = new Date("Jan 7, 2024");
-    const timezone = "Central Time";
+document.addEventListener("DOMContentLoaded", function () {
+    // Variables
+    const pollTitle = document.querySelector('.poll-title');
+    const defaultTimeZone = document.querySelector('.default-timezone');
+    const voterNameInput = document.getElementById('voterName');
+    const scheduleTable = document.getElementById('scheduleTable');
+    const voteResultDiv = document.getElementById('voteResult');
+
+    const startDate = "Dec 31, Sun";
+    const endDate = "Jan 7, Sun";
+    const timeZone = "Central Time";
     const weekendStartTime = 9;
     const weekendEndTime = 22;
     const weekdayStartTime = 20;
     const weekdayEndTime = 22;
 
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const numOfDays = Math.ceil((endDate - startDate) / (24 * 60 * 60 * 1000));
-    const table = document.getElementById('scheduleTable');
-    const voterNameInput = document.getElementById('voterName');
+    // Calculate the number of days (d)
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    const daysDiff = Math.floor((endDateObj - startDateObj) / (1000 * 60 * 60 * 24));
+    const d = daysDiff + 1;
 
-    // Create table header
-    let headerRow = '<tr><th>Name</th>';
-    for (let i = 0; i <= numOfDays; i++) {
-        const currentDate = new Date(startDate);
-        currentDate.setDate(startDate.getDate() + i);
-        const dayName = days[currentDate.getDay()];
-        headerRow += `<th>${dayName}</th>`;
-    }
-    headerRow += '</tr>';
+    // Update Poll Title and Default Time Zone
+    pollTitle.style.fontSize = "25px";
+    defaultTimeZone.textContent = `Default Time Zone: ${timeZone}`;
 
-    // Create time slots
-    let timeRows = '';
-    for (let hour = 1; hour <= 23; hour++) {
-        timeRows += `<tr><td>${hour}:00 - ${hour}:30</td>`;
-        for (let day = 0; day <= numOfDays; day++) {
-            const isWeekend = days[(startDate.getDay() + day) % 7] === "Sun" || days[(startDate.getDay() + day) % 7] === "Sat";
-            const startTime = isWeekend ? weekendStartTime : weekdayStartTime;
-            const endTime = isWeekend ? weekendEndTime : weekdayEndTime;
-            const isDisabled = hour < startTime || hour > endTime;
-            timeRows += `<td><input type="checkbox" ${isDisabled ? 'disabled' : ''}></td>`;
-        }
-        timeRows += '</tr>';
-    }
+    // Generate Schedule Table
+    generateScheduleTable();
 
-    // Append table to the document
-    table.innerHTML = `<table>${headerRow}${timeRows}</table>`;
+    // Submit Vote Function
+    window.submitVote = function () {
+        const voterName = voterNameInput.value;
+        const selectedCells = document.querySelectorAll('input[type="checkbox"]:checked');
+        const voteDetails = [];
 
-    // Handle checkbox click
-    table.addEventListener('click', function (event) {
-        const target = event.target;
-        if (target.type === 'checkbox' && target.checked) {
-            const rowIndex = target.parentNode.parentNode.rowIndex;
-            const colIndex = target.parentNode.cellIndex;
+        selectedCells.forEach(cell => {
+            const dayIndex = cell.dataset.dayIndex;
+            const timeSlot = cell.dataset.timeSlot;
+            const date = scheduleTable.rows[0].cells[parseInt(dayIndex) + 1].textContent;
+            voteDetails.push(`Name: ${voterName}, Date: ${date}, Time: ${timeSlot}`);
+        });
 
-            const currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + colIndex - 1);
-            const dayName = days[currentDate.getDay()];
-            const selectedDate = `${currentDate.toDateString()}, ${dayName}`;
-            const selectedTime = `${(rowIndex - 1).toString().padStart(2, '0')}:00 - ${(rowIndex - 1).toString().padStart(2, '0')}:30`;
+        // Display Vote Results
+        voteResultDiv.innerHTML = `<p><strong>Votes Recorded:</strong></p><ul>${voteDetails.map(item => `<li>${item}</li>`).join('')}</ul>`;
+    };
 
-            const voterName = voterNameInput.value.trim();
-            if (voterName !== '') {
-                alert(`${voterName} voted on ${selectedDate} at ${selectedTime}`);
-            } else {
-                alert('Please enter your name before voting.');
-                target.checked = false;
+    // Function to Generate Schedule Table
+    function generateScheduleTable() {
+        // Table Body
+        const tbody = scheduleTable.getElementsByTagName('tbody')[0];
+
+        // Time Slots (1:00 - 23:00, half-hour intervals)
+        for (let i = 1; i <= 23; i++) {
+            const timeSlot = `${String(i).padStart(2, '0')}:00 - ${String(i).padStart(2, '0')}:30`;
+            const row = tbody.insertRow();
+            const cell = row.insertCell(0);
+            cell.textContent = timeSlot;
+
+            for (let j = 1; j <= d; j++) {
+                const cell = row.insertCell(j);
+                const isWeekend = j === 1 || j === 7;
+                const startTime = isWeekend ? weekendStartTime : weekdayStartTime;
+                const endTime = isWeekend ? weekendEndTime : weekdayEndTime;
+
+                if (i >= startTime && i <= endTime) {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.dataset.dayIndex = j - 1;
+                    checkbox.dataset.timeSlot = timeSlot;
+                    cell.appendChild(checkbox);
+                }
             }
         }
-    });
+    }
 });
