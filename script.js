@@ -1,7 +1,6 @@
 const pollTitle = "PAG Prep Schedule Poll";
 const timeZone = "Central Time";
 const meetingStartTime = { weekdays: "8:00 PM", weekends: "9:00 AM" };
-const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const dateRange = ["Dec 31, Sun", "Jan 1, Mon", "Jan 2, Tue", "Jan 3, Wed", "Jan 4, Thu", "Jan 5, Fri", "Jan 6, Sat", "Jan 7, Sun"];
 
 const container = document.querySelector('.container');
@@ -75,11 +74,40 @@ function displayResults(selectedOptions) {
             resultsList.appendChild(listItem);
         });
         votingResults.appendChild(resultsList);
+
+        // Calculate most selected date and time
+        const mostSelected = calculateMostSelected(selectedOptions);
+        const mostSelectedMessage = document.createElement('p');
+        mostSelectedMessage.textContent = `Most selected date and time: ${mostSelected.date} at ${mostSelected.time} (${mostSelected.count} votes)`;
+        votingResults.appendChild(mostSelectedMessage);
+
+        // Display total number of votes
+        const totalVotesMessage = document.createElement('p');
+        totalVotesMessage.textContent = `Total number of votes: ${selectedOptions.length}`;
+        votingResults.appendChild(totalVotesMessage);
     } else {
         const noVotesMessage = document.createElement('p');
         noVotesMessage.textContent = "No votes recorded yet.";
         votingResults.appendChild(noVotesMessage);
     }
+}
+
+function calculateMostSelected(selectedOptions) {
+    const countMap = {};
+    selectedOptions.forEach(option => {
+        const key = `${option.selectedDate} ${option.selectedTime}`;
+        countMap[key] = (countMap[key] || 0) + 1;
+    });
+
+    let mostSelected = { date: "", time: "", count: 0 };
+    for (const key in countMap) {
+        if (countMap[key] > mostSelected.count) {
+            mostSelected.count = countMap[key];
+            [mostSelected.date, mostSelected.time] = key.split(" ");
+        }
+    }
+
+    return mostSelected;
 }
 
 // Call the function to create the schedule poll when the page loads
