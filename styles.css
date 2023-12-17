@@ -1,15 +1,32 @@
-/* styles.css */
-
 body {
     font-family: Arial, sans-serif;
 }
 
 .container {
     max-width: 800px;
-    margin: 0 auto;
+    margin: 50px auto;
 }
 
 .poll-title {
     font-size: 25px;
     text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+button {
+    margin-top: 20px;
 }
