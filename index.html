@@ -1,30 +1,26 @@
-<!-- index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>Online Scheduling Tool</title>
 </head>
-
 <body>
     <div class="container">
         <h1 class="poll-title">PAG Prep Schedule Poll</h1>
         <p>Default Time Zone: Central Time</p>
-        <p>Volter's Name: <input type="text" id="volterName" /></p>
+        <p>Enter your name: <input type="text" id="voterName"></p>
 
         <table id="scheduleTable">
-            <!-- Table will be generated using JavaScript -->
+            <!-- Table content will be generated using JavaScript -->
         </table>
 
         <button onclick="submitVotes()">Submit</button>
-        <div id="submittedVotes"></div>
+
+        <div id="result"></div>
     </div>
 
     <script src="script.js"></script>
 </body>
-
 </html>
