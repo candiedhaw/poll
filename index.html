@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
-    <title>PAG Prep Schedule Poll</title>
+    <title>Online Scheduling Tool</title>
 </head>
 <body>
     <div class="container">
         <h1 class="poll-title">PAG Prep Schedule Poll</h1>
-        <label for="name">Your Name:</label>
-        <input type="text" id="name" placeholder="Enter your name">
-
-        <!-- Schedule table -->
-        <table id="schedule-table">
-            <!-- Table content will be generated dynamically using JavaScript -->
+        <p>Default Time Zone: Central Time</p>
+        <label for="voterName">Your Name:</label>
+        <input type="text" id="voterName" placeholder="Enter your name">
+        
+        <table id="scheduleTable">
+            <!-- Table will be generated dynamically using JavaScript -->
         </table>
+        
+        <button onclick="submitVote()">Submit</button>
 
-        <button onclick="submitVote()">Submit Vote</button>
-
-        <!-- Display the most selected date and time -->
-        <div id="result"></div>
+        <div id="votingResult"></div>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
