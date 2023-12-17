@@ -1,79 +1,68 @@
-// script.js
-
 document.addEventListener('DOMContentLoaded', function () {
-    createScheduleTable();
-});
+    // Set the poll title
+    document.querySelector('.poll-title').innerHTML = "PAG Prep Schedule Poll";
 
-function formatDate(date) {
-    const options = { month: 'short', day: 'numeric', weekday: 'short' };
-    return new Intl.DateTimeFormat('en-US', options).format(date);
-}
-
-function createScheduleTable() {
-    const pollTitle = "PAG prep schedule poll";
-    const dateRange = "Dec 31, Sun to Jan 7, Sun";
+    // Set the default time zone
     const timeZone = "Central Time";
-    const d = 7; // Number of days in the date range
 
-    // Set poll title
-    document.querySelector('.poll-title').textContent = pollTitle;
+    // Get the days from the date range
+    const startDate = new Date("Dec 31, 2023");
+    const endDate = new Date("Jan 7, 2024");
+    const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
 
-    // Create table header
-    const table = document.getElementById('scheduleTable');
-    const headerRow = table.insertRow();
-    headerRow.insertCell().textContent = "Name";
+    // Generate the table
+    generateTable(days);
 
-    for (let i = 0; i <= d; i++) {
-        const currentDate = new Date(dateRange);
-        currentDate.setDate(currentDate.getDate() + i);
-        const dateInfo = formatDate(currentDate);
+    // Function to generate the table dynamically
+    function generateTable(days) {
+        const table = document.getElementById('scheduleTable');
+        const headerRow = table.insertRow(0);
 
-        const cell = headerRow.insertCell();
-        cell.textContent = dateInfo;
-    }
+        // Add name column
+        const nameCell = headerRow.insertCell(0);
+        nameCell.textContent = "Name";
 
-    // Create time slots and checkboxes
-    for (let hour = 1; hour <= 24; hour++) {
-        const row = table.insertRow();
+        // Add date columns
+        for (let i = 0; i < days; i++) {
+            const dateCell = headerRow.insertCell(i + 1);
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + i);
+            dateCell.textContent = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
+        }
 
-        for (let day = 0; day <= d; day++) {
-            if (day === 0) {
-                const cell = row.insertCell();
-                cell.textContent = `${hour}:00-${hour + 1}:00`;
-            } else {
-                const cell = row.insertCell();
+        // Add time rows
+        for (let hour = 1; hour <= 24; hour++) {
+            const row = table.insertRow(hour);
+            const timeCell = row.insertCell(0);
+            timeCell.textContent = `${hour}:00 - ${hour + 1}:00`;
+
+            for (let day = 1; day <= days; day++) {
+                const checkboxCell = row.insertCell(day);
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
-                checkbox.name = `vote_${hour}_${day}`;
-                checkbox.value = '1';
-                cell.appendChild(checkbox);
+                checkboxCell.appendChild(checkbox);
             }
         }
     }
-}
+});
 
 function submitVotes() {
-    const volterName = document.getElementById('volterName').value;
-
-    if (volterName === "") {
-        alert("Please enter your name before submitting.");
-        return;
-    }
-
+    const voterName = document.getElementById('voterName').value;
     const table = document.getElementById('scheduleTable');
-    const submittedVotes = document.getElementById('submittedVotes');
+    const resultDiv = document.getElementById('result');
 
-    submittedVotes.innerHTML = `<p>${volterName} voted on:</p>`;
+    let result = `<p>${voterName} voted on:</p>`;
 
-    for (let day = 1; day <= d; day++) {
+    for (let day = 1; day <= table.rows[0].cells.length - 1; day++) {
         for (let hour = 1; hour <= 24; hour++) {
-            const checkbox = document.querySelector(`input[name="vote_${hour}_${day}"]`);
+            const checkbox = table.rows[hour].cells[day].querySelector('input[type="checkbox"]');
             if (checkbox.checked) {
-                const currentDate = new Date(dateRange);
-                currentDate.setDate(currentDate.getDate() + day - 1);
-                const dayInfo = formatDate(currentDate);
-                submittedVotes.innerHTML += `<p>${volterName} voted on ${dayInfo} at ${hour}:00-${hour + 1}:00</p>`;
+                const date = table.rows[0].cells[day].textContent;
+                const time = table.rows[hour].cells[0].textContent;
+                result += `<p>${date}, ${time}</p>`;
             }
         }
     }
+
+    resultDiv.innerHTML = result;
 }
