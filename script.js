@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Set the poll title
-    document.querySelector('.poll-title').innerHTML = "PAG Prep Schedule Poll";
+    document.querySelector('.poll-title').innerHTML = "Schedule Poll";
 
     // Set the default time zone
     const timeZone = "Central Time";
