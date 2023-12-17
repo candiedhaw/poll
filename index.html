@@ -10,8 +10,41 @@
     <div class="container">
         <h1 class="poll-title">PAG Prep Schedule Poll</h1>
         <p class="default-timezone">Default Time Zone: Central Time</p>
-        <p>Enter your name: <input type="text" id="voterName"></p>
-        <div id="scheduleTable"></div>
+        <p>Enter Your Name: <input type="text" id="voterName"></p>
+        
+        <!-- Schedule Table -->
+        <table id="scheduleTable">
+            <!-- Table Headers -->
+            <thead>
+                <tr>
+                    <th></th> <!-- Empty cell for spacing -->
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <!-- Table Body -->
+            <tbody>
+                <!-- Poll Title and Date Row -->
+                <tr>
+                    <td></td> <!-- Empty cell for spacing -->
+                    <td colspan="7">Dec 31, Sun - Jan 7, Sun</td>
+                </tr>
+                <!-- Time Slots and Checkboxes -->
+                <!-- JavaScript will dynamically generate this part based on the number of days (d) -->
+            </tbody>
+        </table>
+
+        <!-- Submit Button -->
+        <button onclick="submitVote()">Submit</button>
+
+        <!-- Display Votes -->
+        <div id="voteResult"></div>
+
     </div>
     <script src="script.js"></script>
 </body>
