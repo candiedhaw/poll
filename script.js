@@ -4,6 +4,11 @@ document.addEventListener('DOMContentLoaded', function () {
     createScheduleTable();
 });
 
+function formatDate(date) {
+    const options = { month: 'short', day: 'numeric', weekday: 'short' };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+}
+
 function createScheduleTable() {
     const pollTitle = "PAG prep schedule poll";
     const dateRange = "Dec 31, Sun to Jan 7, Sun";
@@ -21,11 +26,10 @@ function createScheduleTable() {
     for (let i = 0; i <= d; i++) {
         const currentDate = new Date(dateRange);
         currentDate.setDate(currentDate.getDate() + i);
-        const day = currentDate.toLocaleDateString('en-US', { weekday: 'short' });
-        const date = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const dateInfo = formatDate(currentDate);
 
         const cell = headerRow.insertCell();
-        cell.textContent = `${date}, ${day}`;
+        cell.textContent = dateInfo;
     }
 
     // Create time slots and checkboxes
@@ -67,7 +71,7 @@ function submitVotes() {
             if (checkbox.checked) {
                 const currentDate = new Date(dateRange);
                 currentDate.setDate(currentDate.getDate() + day - 1);
-                const dayInfo = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
+                const dayInfo = formatDate(currentDate);
                 submittedVotes.innerHTML += `<p>${volterName} voted on ${dayInfo} at ${hour}:00-${hour + 1}:00</p>`;
             }
         }
