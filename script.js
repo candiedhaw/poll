@@ -1,95 +1,88 @@
-const pollTitle = "PAG Prep Schedule Poll";
-const timeZone = "Central Time";
-const dateRange = ["Dec 31, Sun", "Jan 1, Mon", "Jan 2, Tue", "Jan 3, Wed", "Jan 4, Thu", "Jan 5, Fri", "Jan 6, Sat", "Jan 7, Sun"];
+// Define the schedule
+const schedule = [
+    "Dec 31, Sun",
+    "Jan 1, Mon",
+    "Jan 2, Tue",
+    "Jan 3, Wed",
+    "Jan 4, Thu",
+    "Jan 5, Fri",
+    "Jan 6, Sat",
+    "Jan 7, Sun",
+];
 
-const container = document.querySelector('.container');
-const pollTitleElement = document.querySelector('.poll-title');
-const scheduleTable = document.getElementById('scheduleTable');
-const nameInput = document.getElementById('nameInput');
-const votingResults = document.getElementById('votingResults');
+// Initialize vote counts
+const voteCounts = Array(schedule.length).fill(0);
 
-function createSchedulePoll() {
-    // Clear previous content
-    scheduleTable.innerHTML = '';
+// Function to render the schedule table
+function renderSchedule() {
+    const pollContainer = document.getElementById("poll-container");
+    const table = document.createElement("table");
+    const headerRow = table.insertRow();
+    const nameHeader = headerRow.insertCell();
+    nameHeader.innerHTML = "Name";
 
-    // Create header row with dates
-    const headerRow = scheduleTable.insertRow(0);
-    headerRow.insertCell(0); // Empty cell for names
-    dateRange.forEach((date, index) => {
-        const cell = headerRow.insertCell(index + 1);
-        cell.textContent = date;
+    schedule.forEach((date, index) => {
+        const headerCell = headerRow.insertCell();
+        headerCell.innerHTML = date;
+
+        const row = table.insertRow();
+        const nameCell = row.insertCell();
+        nameCell.innerHTML = `<input type="checkbox" name="vote" value="${index}">`;
     });
 
-    // Create rows for time slots
-    for (let hour = 1; hour <= 23; hour++) {
-        const timeSlotRow = scheduleTable.insertRow(hour);
-        const timeSlotCell = timeSlotRow.insertCell(0);
-        timeSlotCell.textContent = `${hour}:00 - ${hour + 1}:00`;
-
-        // Create checkboxes for each day
-        for (let dayIndex = 0; dayIndex < dateRange.length; dayIndex++) {
-            const checkBoxCell = timeSlotRow.insertCell(dayIndex + 1);
-            const checkBox = document.createElement("input");
-            checkBox.type = "checkbox";
-            checkBox.classList.add("check-box");
-            checkBoxCell.appendChild(checkBox);
-        }
-    }
+    pollContainer.appendChild(table);
 }
 
+// Function to submit a vote
 function submitVote() {
-    const voterName = nameInput.value;
-    const selectedOptions = [];
+    const name = document.getElementById("name").value;
+    const checkboxes = document.getElementsByName("vote");
+    const selectedIndexes = Array.from(checkboxes)
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => parseInt(checkbox.value));
 
-    // Loop through checkboxes to check which ones are selected
-    for (let hour = 1; hour <= 23; hour++) {
-        for (let dayIndex = 0; dayIndex < dateRange.length; dayIndex++) {
-            const checkBox = scheduleTable.rows[hour].cells[dayIndex + 1].querySelector("input");
-            if (checkBox.checked) {
-                const selectedDate = dateRange[dayIndex];
-                const selectedTime = `${hour}:00 - ${hour + 1}:00`;
-                selectedOptions.push({ voterName, selectedDate, selectedTime });
-            }
+    if (selectedIndexes.length === 0) {
+        alert("Please select at least one time slot.");
+        return;
+    }
+
+    // Update vote counts
+    selectedIndexes.forEach(index => voteCounts[index]++);
+
+    // Display results
+    displayResults();
+
+    // Clear name input and checkboxes
+    document.getElementById("name").value = "";
+    checkboxes.forEach(checkbox => checkbox.checked = false);
+}
+
+// Function to display results
+function displayResults() {
+    const mostSelectedIndex = voteCounts.indexOf(Math.max(...voteCounts));
+    const mostSelectedDate = schedule[mostSelectedIndex];
+    const mostSelectedUsers = getMostSelectedUsers(mostSelectedIndex);
+    const totalVotes = voteCounts.reduce((sum, count) => sum + count, 0);
+
+    document.getElementById("most-selected").innerHTML = `Most Selected Date: ${mostSelectedDate} (${mostSelectedUsers.join(", ")})`;
+    document.getElementById("total-votes").innerHTML = `Total Votes: ${totalVotes}`;
+}
+
+// Function to get users who selected the most voted date
+function getMostSelectedUsers(mostSelectedIndex) {
+    const checkboxes = document.getElementsByName("vote");
+    const mostSelectedUsers = [];
+
+    checkboxes.forEach((checkbox, index) => {
+        if (checkbox.checked && selectedIndexes.includes(index)) {
+            mostSelectedUsers.push(document.getElementById("name").value);
         }
-    }
+    });
 
-    // Display the selected options
-    displayResults(selectedOptions);
+    return mostSelectedUsers;
 }
 
-function displayResults(selectedOptions) {
-    // Clear previous results
-    votingResults.innerHTML = '';
-
-    // Display the results
-    if (selectedOptions.length > 0) {
-        const resultsHeading = document.createElement('h2');
-        resultsHeading.textContent = "Voting Results";
-        votingResults.appendChild(resultsHeading);
-
-        const resultsList = document.createElement('ul');
-        selectedOptions.forEach(option => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${option.voterName} voted on ${option.selectedDate} at ${option.selectedTime}`;
-            resultsList.appendChild(listItem);
-        });
-        votingResults.appendChild(resultsList);
-
-        // Calculate most selected date and time
-        const mostSelected = calculateMostSelected(selectedOptions);
-        const mostSelectedMessage = document.createElement('p');
-        mostSelectedMessage.textContent = `Most selected date and time: ${mostSelected.date} at ${mostSelected.time} (${mostSelected.count} votes)`;
-        votingResults.appendChild(mostSelectedMessage);
-
-        // Display total number of votes
-        const totalVotesMessage = document.createElement('p');
-        totalVotesMessage.textContent = `Total number of votes: ${selectedOptions.length}`;
-        votingResults.appendChild(totalVotesMessage);
-    } else {
-        const noVotesMessage = document.createElement('p');
-        noVotesMessage.textContent = "No votes recorded yet.";
-        votingResults.appendChild(noVotesMessage);
-    }
-}
-
-function
+// Render the schedule on page load
+window.onload = function () {
+    renderSchedule();
+};
