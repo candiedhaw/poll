@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>PAG Prep Schedule Poll</title>
 </head>
 <body>
     <div class="container">
-        <h1>Voting Schedule</h1>
-        <table id="pollTable"></table>
-        <button onclick="getResults()">Get Results</button>
-        <div id="results"></div>
+        <h1>PAG Prep Schedule Poll</h1>
+        <p>Default Time Zone: Central Time</p>
+        <p>Meeting Start Time: Weekends - 9 am to 10 pm; Workdays - 8 pm to 10 pm</p>
+        <p>Volter, type in your name:</p>
+        <input type="text" id="nameInput" placeholder="Enter your name">
+        <button onclick="submitVote()">Submit Vote</button>
+        <table id="scheduleTable"></table>
+        <div id="votingResults"></div>
     </div>
     <script src="script.js"></script>
 </body>
