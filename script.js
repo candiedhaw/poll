@@ -1,27 +1,84 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const pollTitle = "PAG Prep Schedule Poll";
+    // Get variables
+    const pollTitle = "PAG prep schedule poll";
     const timeZone = "Central Time";
-    const meetingStartTimeWeekend = "9:00 AM";
-    const meetingEndTimeWeekend = "10:00 PM";
-    const meetingStartTimeWorkday = "8:00 PM";
-    const meetingEndTimeWorkday = "10:00 PM";
-    const startDate = "Dec 31, Sun";
-    const endDate = "Jan 7, Sun";
-    
+    const meetingStartTimeWeekends = 9;
+    const meetingEndTimeWeekends = 22;
+    const meetingStartTimeWorkdays = 20;
+    const meetingEndTimeWorkdays = 22;
+
+    const dateOptions = {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+    };
+
+    // Display poll title
+    document.querySelector('.poll-title').innerText = pollTitle;
+
+    // Create table
+    const table = document.getElementById("scheduleTable");
     const volterNameInput = document.getElementById("volterName");
-    const scheduleTable = document.getElementById("scheduleTable");
-    const submissionDetails = document.getElementById("submissionDetails");
+    const votingResults = document.getElementById("votingResults");
 
-    // Generate the schedule table
-    generateScheduleTable(startDate, endDate);
+    // Get date range
+    const startDate = new Date("Dec 31, 2023");
+    const endDate = new Date("Jan 7, 2024");
 
-    // Function to generate the schedule table dynamically
-    function generateScheduleTable(startDate, endDate) {
-        // Implement this function to generate the table based on the given variables
+    // Populate table
+    for (let i = 0; i <= 25; i++) {
+        const row = table.insertRow(i);
+
+        for (let j = 0; j <= 8; j++) {
+            const cell = row.insertCell(j);
+
+            if (i === 0) {
+                if (j === 0) {
+                    cell.innerText = "Name";
+                } else {
+                    const currentDate = new Date(startDate);
+                    currentDate.setDate(startDate.getDate() + (j - 1));
+                    cell.innerText = currentDate.toLocaleDateString('en-US', dateOptions);
+                }
+            } else {
+                if (j === 0) {
+                    cell.innerText = `${(i - 1) * 0.5 + 1}:00`;
+                } else {
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.className = "vote-checkbox";
+                    cell.appendChild(checkbox);
+                }
+            }
+        }
     }
 
-    // Function to submit votes
-    function submitVotes() {
-        // Implement this function to record votes and display submission details
-    }
+    // Submit votes function
+    window.submitVotes = function () {
+        const volterName = volterNameInput.value;
+        const checkedCheckboxes = document.querySelectorAll('.vote-checkbox:checked');
+
+        const voteDetails = [];
+
+        checkedCheckboxes.forEach((checkbox) => {
+            const rowIndex = checkbox.parentElement.parentElement.rowIndex;
+            const colIndex = checkbox.parentElement.cellIndex;
+
+            const date = table.rows[0].cells[colIndex].innerText;
+            const time = table.rows[rowIndex].cells[0].innerText;
+
+            voteDetails.push({
+                voter: volterName,
+                date: date,
+                time: time
+            });
+        });
+
+        // Display voting results
+        votingResults.innerHTML = "<h2>Voting Results:</h2>";
+
+        voteDetails.forEach((vote) => {
+            votingResults.innerHTML += `<p>${vote.voter} voted on ${vote.date} at ${vote.time}</p>`;
+        });
+    };
 });
