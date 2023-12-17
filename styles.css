@@ -1,49 +1,57 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
+    background-color: #f5f5f5;
 }
 
 .container {
     max-width: 800px;
-    margin: 20px auto;
+    margin: 50px auto;
     padding: 20px;
     background-color: #fff;
+    border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .poll-title {
     font-size: 25px;
     text-align: center;
-}
-
-#schedule-table {
-    margin-top: 20px;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-#schedule-table, th, td {
-    border: 1px solid #ddd;
-}
-
-th, td {
-    padding: 8px;
-    text-align: center;
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
-    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
 }
 
 button {
-    margin-top: 10px;
-    background-color: #4CAF50;
+    padding: 10px 20px;
+    background-color: #4caf50;
     color: #fff;
-    padding: 10px;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
 }
 
@@ -51,6 +59,6 @@ button:hover {
     background-color: #45a049;
 }
 
-#result {
+#votingResult {
     margin-top: 20px;
 }
