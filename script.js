@@ -1,88 +1,65 @@
-// Define the schedule
-const schedule = [
-    "Dec 31, Sun",
-    "Jan 1, Mon",
-    "Jan 2, Tue",
-    "Jan 3, Wed",
-    "Jan 4, Thu",
-    "Jan 5, Fri",
-    "Jan 6, Sat",
-    "Jan 7, Sun",
-];
+document.addEventListener('DOMContentLoaded', function () {
+    const pollTitle = "PAG prep schedule poll";
+    const startDate = new Date("Dec 31, 2023");
+    const endDate = new Date("Jan 7, 2024");
+    const timezone = "Central Time";
+    const weekendStartTime = 9;
+    const weekendEndTime = 22;
+    const weekdayStartTime = 20;
+    const weekdayEndTime = 22;
 
-// Initialize vote counts
-const voteCounts = Array(schedule.length).fill(0);
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const numOfDays = Math.ceil((endDate - startDate) / (24 * 60 * 60 * 1000));
+    const table = document.getElementById('scheduleTable');
+    const voterNameInput = document.getElementById('voterName');
 
-// Function to render the schedule table
-function renderSchedule() {
-    const pollContainer = document.getElementById("poll-container");
-    const table = document.createElement("table");
-    const headerRow = table.insertRow();
-    const nameHeader = headerRow.insertCell();
-    nameHeader.innerHTML = "Name";
+    // Create table header
+    let headerRow = '<tr><th>Name</th>';
+    for (let i = 0; i <= numOfDays; i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+        const dayName = days[currentDate.getDay()];
+        headerRow += `<th>${dayName}</th>`;
+    }
+    headerRow += '</tr>';
 
-    schedule.forEach((date, index) => {
-        const headerCell = headerRow.insertCell();
-        headerCell.innerHTML = date;
-
-        const row = table.insertRow();
-        const nameCell = row.insertCell();
-        nameCell.innerHTML = `<input type="checkbox" name="vote" value="${index}">`;
-    });
-
-    pollContainer.appendChild(table);
-}
-
-// Function to submit a vote
-function submitVote() {
-    const name = document.getElementById("name").value;
-    const checkboxes = document.getElementsByName("vote");
-    const selectedIndexes = Array.from(checkboxes)
-        .filter(checkbox => checkbox.checked)
-        .map(checkbox => parseInt(checkbox.value));
-
-    if (selectedIndexes.length === 0) {
-        alert("Please select at least one time slot.");
-        return;
+    // Create time slots
+    let timeRows = '';
+    for (let hour = 1; hour <= 23; hour++) {
+        timeRows += `<tr><td>${hour}:00 - ${hour}:30</td>`;
+        for (let day = 0; day <= numOfDays; day++) {
+            const isWeekend = days[(startDate.getDay() + day) % 7] === "Sun" || days[(startDate.getDay() + day) % 7] === "Sat";
+            const startTime = isWeekend ? weekendStartTime : weekdayStartTime;
+            const endTime = isWeekend ? weekendEndTime : weekdayEndTime;
+            const isDisabled = hour < startTime || hour > endTime;
+            timeRows += `<td><input type="checkbox" ${isDisabled ? 'disabled' : ''}></td>`;
+        }
+        timeRows += '</tr>';
     }
 
-    // Update vote counts
-    selectedIndexes.forEach(index => voteCounts[index]++);
+    // Append table to the document
+    table.innerHTML = `<table>${headerRow}${timeRows}</table>`;
 
-    // Display results
-    displayResults();
+    // Handle checkbox click
+    table.addEventListener('click', function (event) {
+        const target = event.target;
+        if (target.type === 'checkbox' && target.checked) {
+            const rowIndex = target.parentNode.parentNode.rowIndex;
+            const colIndex = target.parentNode.cellIndex;
 
-    // Clear name input and checkboxes
-    document.getElementById("name").value = "";
-    checkboxes.forEach(checkbox => checkbox.checked = false);
-}
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + colIndex - 1);
+            const dayName = days[currentDate.getDay()];
+            const selectedDate = `${currentDate.toDateString()}, ${dayName}`;
+            const selectedTime = `${(rowIndex - 1).toString().padStart(2, '0')}:00 - ${(rowIndex - 1).toString().padStart(2, '0')}:30`;
 
-// Function to display results
-function displayResults() {
-    const mostSelectedIndex = voteCounts.indexOf(Math.max(...voteCounts));
-    const mostSelectedDate = schedule[mostSelectedIndex];
-    const mostSelectedUsers = getMostSelectedUsers(mostSelectedIndex);
-    const totalVotes = voteCounts.reduce((sum, count) => sum + count, 0);
-
-    document.getElementById("most-selected").innerHTML = `Most Selected Date: ${mostSelectedDate} (${mostSelectedUsers.join(", ")})`;
-    document.getElementById("total-votes").innerHTML = `Total Votes: ${totalVotes}`;
-}
-
-// Function to get users who selected the most voted date
-function getMostSelectedUsers(mostSelectedIndex) {
-    const checkboxes = document.getElementsByName("vote");
-    const mostSelectedUsers = [];
-
-    checkboxes.forEach((checkbox, index) => {
-        if (checkbox.checked && selectedIndexes.includes(index)) {
-            mostSelectedUsers.push(document.getElementById("name").value);
+            const voterName = voterNameInput.value.trim();
+            if (voterName !== '') {
+                alert(`${voterName} voted on ${selectedDate} at ${selectedTime}`);
+            } else {
+                alert('Please enter your name before voting.');
+                target.checked = false;
+            }
         }
     });
-
-    return mostSelectedUsers;
-}
-
-// Render the schedule on page load
-window.onload = function () {
-    renderSchedule();
-};
+});
